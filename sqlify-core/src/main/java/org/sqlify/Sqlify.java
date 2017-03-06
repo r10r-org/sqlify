@@ -105,15 +105,15 @@ public class Sqlify<T> {
         return preparedStatement;
     }
     
-    public static class Builder<E> {
-        
-        public Builder1<E> sql(String sql) {
-            return new Builder1<>(sql);
-        }
-
+    ////////////////////////////////////////////////////////////////////////////
+    // Builder pattern
+    ////////////////////////////////////////////////////////////////////////////
+    public static <E> Builder1<E> sql(String sql) {
+        return new Builder1<>(sql);
     }
-    
+
     public static class Builder1<E> {
+
         private String sql;
         private LinkedHashMap<String, Object> parameterMap;
         private ResultParser<E> resultParser;
@@ -122,85 +122,27 @@ public class Sqlify<T> {
             this.sql = sql;
             this.parameterMap = new LinkedHashMap<>();
         }
-        
+
         public Builder1<E> withParameter(String key, Object value) {
             parameterMap.put(key, value);
             return this;
         }
-        
+
         public Builder1<E> parseResultWith(ResultParser<E> resultParser) {
             this.resultParser = resultParser;
             return this;
         }
-        
+
         public E executeSelect(Connection connection) {
             Sqlify<E> sql = new Sqlify<>(this.sql, this.resultParser, this.parameterMap);
             return sql.<E>executeSelect(connection);
         }
-        
+
         public int executeUpdate(Connection connection) {
             Sqlify<E> sql = new Sqlify<>(this.sql, this.resultParser, this.parameterMap);
             return sql.<E>executeUpdate(connection);
         }
-        
-    }
-    
-    public static <E> Builder1<E> sql(String sql) {
-        return new Builder<E>().<E>sql(sql);
-    }
-        
-        
-    
-    
 
-//    public static class OldBuilder<T> {
-//
-//        private String sql;
-//        private LinkedHashMap<String, Object> parameterMap;
-//        private ResultParser<T> resultParser;
-//        private DataSource dataSource;
-//
-//        public OldBuilder() {
-//            this.parameterMap = new LinkedHashMap<>();
-//        }
-//        
-//        public OldBuilder<T> datasource(DataSource dataSource) {
-//            this.dataSource = dataSource;
-//            return this;
-//        }
-//
-//        public OldBuilder<T> sql(String sql) {
-//            this.sql = sql;
-//            return this;
-//        }
-//
-//        public OldBuilder<T> parseResultWith(ResultParser<T> resultParser) {
-//            this.resultParser = resultParser;
-//            return this;
-//        }
-//
-//        public OldBuilder<T> with(String key, Object value) {
-//            parameterMap.put(key, value);
-//            return this;
-//        }
-//
-//        public T executeSelect() {
-//            try(Connection connection = dataSource.getConnection()) {
-//                Sql<T> sql = new Sql<>(this.sql, this.resultParser, this.parameterMap);
-//                return sql.executeSelect(connection);
-//            } catch (Exception e) {
-//                throw new RuntimeException(e);
-//            }
-//        }
-//        
-//        public int executeUpdate() {
-//            try(Connection connection = dataSource.getConnection()) {
-//                Sql<T> sql = new Sql<>(this.sql, this.resultParser, this.parameterMap);
-//                return sql.executeUpdate(connection);
-//            } catch (Exception e) {
-//                throw new RuntimeException(e);
-//            }
-//        }
-//    }
+    }
 
 }

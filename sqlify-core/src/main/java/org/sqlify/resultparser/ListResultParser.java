@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.sqlify.resultparser;
 
 import org.sqlify.ResultParser;
@@ -11,10 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.sqlify.PojoHelper;
 
-/**
- *
- * @author ra
- */
 public class ListResultParser<T> implements ResultParser<List<T>> {
     
     private final Class<T> clazz;
