@@ -1,9 +1,11 @@
 package org.sqlify;
 
+import org.sqlify.resultparser.ResultParser;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -49,11 +51,14 @@ public class Sqlify<T> {
     }
   }
   
-  private T executeUpdateAndParseGeneratedKeys(Connection connection) {
+  private T executeUpdateAndReturnGeneratedKey(Connection connection) {
     try {
       String convertedPreparedStatement = convertIntoPreparedStatement(sql);
-      PreparedStatement preparedStatement = connection.prepareStatement(convertedPreparedStatement);
+      PreparedStatement preparedStatement = connection.prepareStatement(
+          convertedPreparedStatement, 
+          Statement.RETURN_GENERATED_KEYS);
       applyParameterMapToPreparedStatement(preparedStatement, parameterMap, positionToNameMap);
+      preparedStatement.executeUpdate();
       ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
       return resultParser.parseResultSet(generatedKeys);
     } catch (Exception ex) {
@@ -156,9 +161,9 @@ public class Sqlify<T> {
       return sql.<E>executeUpdate(connection);
     }
     
-    public E executeUpdateAndParseGeneratedKeys(Connection connection) {
+    public E executeUpdateAndReturnGeneratedKey(Connection connection) {
       Sqlify<E> sql = new Sqlify<>(this.sql, this.resultParser, this.parameterMap);
-      return sql.<E>executeUpdateAndParseGeneratedKeys(connection);
+      return sql.<E>executeUpdateAndReturnGeneratedKey(connection);
     }
 
   }

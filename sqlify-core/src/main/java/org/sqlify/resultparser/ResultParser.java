@@ -1,4 +1,4 @@
-package org.sqlify;
+package org.sqlify.resultparser;
 
 import java.sql.ResultSet;
 

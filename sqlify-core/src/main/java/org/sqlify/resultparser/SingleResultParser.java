@@ -1,16 +1,16 @@
 package org.sqlify.resultparser;
 
+import org.sqlify.rowparser.RowParsers;
 import java.sql.ResultSet;
 import java.util.Optional;
-import org.sqlify.PojoHelper;
-import org.sqlify.ResultParser;
+import org.sqlify.rowparser.RowParser;
 
-public class SingleResultParser<T> implements ResultParser<Optional<T>> {
+public class SingleResultParser<T> implements ResultParser<T> {
 
-  private final Class<T> clazz;
+  private final RowParser<T> rowParser;
 
   private SingleResultParser(Class<T> clazz) {
-    this.clazz = clazz;
+    this.rowParser = RowParsers.<T>getRowParserFor(clazz);
   }
 
   public static <E> SingleResultParser<E> of(Class<E> clazz) {
@@ -18,15 +18,12 @@ public class SingleResultParser<T> implements ResultParser<Optional<T>> {
   }
 
   @Override
-  public Optional<T> parseResultSet(ResultSet resultSet) throws Exception {
-    Optional<T> optional;
+  public T parseResultSet(ResultSet resultSet) throws Exception {
     if (resultSet.next()) {
-      T t = new PojoHelper<>(clazz).convertIntoPojo(resultSet);
-      optional = Optional.of(t);
+      return rowParser.parse(resultSet);
     } else {
-      optional = Optional.empty();
+      throw new RuntimeException("Ops. Could not parse single result, or there was not result.");
     }
-    return optional;
   }
 
 }

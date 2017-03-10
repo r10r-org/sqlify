@@ -7,21 +7,20 @@ public class ConnectionManager<T> {
 
   private final Connection connection;
 
-  public static interface Executeable<T> {
-
-    T executute(Connection connection);
+  public static interface Executable<T> {
+    T execute(Connection connection);
   }
 
-  public static <E> E withConnection(DataSource dataSource, Executeable<E> executeable) {
-    return new ConnectionManager<E>(dataSource).withConnection(executeable);
+  public static <E> E withConnection(DataSource dataSource, Executable<E> executable) {
+    return new ConnectionManager<E>(dataSource).withConnection(executable);
   }
 
-  public static <E> E withTransaction(DataSource dataSource, Executeable<E> executeable) {
-    return new ConnectionManager<E>(dataSource).withTransaction(executeable);
+  public static <E> E withTransaction(DataSource dataSource, Executable<E> executable) {
+    return new ConnectionManager<E>(dataSource).withTransaction(executable);
   }
 
-  public static <E> E withTransaction(Connection connection, Executeable<E> executeable) {
-    return new ConnectionManager<E>(connection).withTransaction(executeable);
+  public static <E> E withTransaction(Connection connection, Executable<E> executable) {
+    return new ConnectionManager<E>(connection).withTransaction(executable);
   }
 
   private ConnectionManager(DataSource dataSource) {
@@ -36,23 +35,23 @@ public class ConnectionManager<T> {
     this.connection = connection;
   }
 
-  private T withConnection(Executeable<T> executable) {
+  private T withConnection(Executable<T> executable) {
     return withConnection(true, executable);
   }
 
-  private T withConnection(boolean autocommit, Executeable<T> executable) {
+  private T withConnection(boolean autocommit, Executable<T> executable) {
     try {
       connection.setAutoCommit(autocommit);
-      return executable.executute(connection);
+      return executable.execute(connection);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
 
-  private T withTransaction(Executeable<T> executeable) {
+  private T withTransaction(Executable<T> executeable) {
     return withConnection(false, connection -> {
       try {
-        T t = executeable.executute(connection);
+        T t = executeable.execute(connection);
         connection.commit();
         return t;
 
