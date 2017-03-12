@@ -3,6 +3,7 @@ package org.sqlify.resultparser;
 import org.sqlify.rowparser.RowParsers;
 import java.sql.ResultSet;
 import java.util.Optional;
+import org.sqlify.SqlifyException;
 import org.sqlify.rowparser.RowParser;
 
 public class SingleResultParser<T> implements ResultParser<T> {
@@ -22,7 +23,7 @@ public class SingleResultParser<T> implements ResultParser<T> {
     if (resultSet.next()) {
       return rowParser.parse(resultSet);
     } else {
-      throw new RuntimeException("Ops. Could not parse single result, or there was not result.");
+      throw new SqlifyException("Ops. Could not parse single result, or there was not result.");
     }
   }
 

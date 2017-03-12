@@ -2,6 +2,7 @@ package org.sqlify.rowparser;
 
 import java.lang.reflect.Field;
 import java.sql.ResultSet;
+import org.sqlify.SqlifyException;
 
 public class PojoRowParser<E> implements RowParser<E> {
 
@@ -26,7 +27,7 @@ public class PojoRowParser<E> implements RowParser<E> {
         Integer value = resultSet.getInt(name);
         field.set(e, value);
       } else {
-        throw new RuntimeException("Ops. not supported... " + field.getName() + " -- " + field.getType());
+        throw new SqlifyException("Ops. not supported... " + field.getName() + " -- " + field.getType());
       }
       field.setAccessible(isFieldAccessible);
     }

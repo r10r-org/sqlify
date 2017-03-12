@@ -35,7 +35,7 @@ public class Sqlify<T> {
       T t = resultParser.parseResultSet(resultSet);
       return t;
     } catch (Exception e) {
-      throw new RuntimeException("Ops. Something strange happened", e);
+      throw new SqlifyException("Ops. Something strange happened", e);
     }
   }
 
@@ -47,7 +47,7 @@ public class Sqlify<T> {
       int numberOfChangedLines = preparedStatement.executeUpdate();
       return numberOfChangedLines;
     } catch (SQLException ex) {
-      throw new RuntimeException("Ops. Something strange happened", ex);
+      throw new SqlifyException("Ops. Something strange happened", ex);
     }
   }
   
@@ -62,7 +62,7 @@ public class Sqlify<T> {
       ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
       return resultParser.parseResultSet(generatedKeys);
     } catch (Exception ex) {
-      throw new RuntimeException("Ops. Something strange happened", ex);
+      throw new SqlifyException("Ops. Something strange happened", ex);
     }
   }
 
@@ -114,11 +114,11 @@ public class Sqlify<T> {
           preparedStatement.setTime(i, (Time) entrySet.getValue());
         } else {
           //TODO add more conversions
-          throw new RuntimeException("ops... type not supported...");
+          throw new SqlifyException("ops... type not supported...");
         }
       }
     } catch (SQLException ex) {
-      throw new RuntimeException("ops... sql error ocurred...", ex);
+      throw new SqlifyException("ops... sql error ocurred...", ex);
     }
     return preparedStatement;
   }

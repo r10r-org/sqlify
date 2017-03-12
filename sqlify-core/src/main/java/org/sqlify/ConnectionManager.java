@@ -27,7 +27,7 @@ public class ConnectionManager<T> {
     try {
       this.connection = dataSource.getConnection();
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      throw new SqlifyException(e);
     }
   }
 
@@ -44,7 +44,7 @@ public class ConnectionManager<T> {
       connection.setAutoCommit(autocommit);
       return executable.execute(connection);
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      throw new SqlifyException(e);
     }
   }
 
@@ -59,10 +59,10 @@ public class ConnectionManager<T> {
         try {
           connection.rollback();
         } catch (Exception e2) {
-          throw new RuntimeException(e2);
+          throw new SqlifyException(e2);
         }
 
-        throw new RuntimeException(e1);
+        throw new SqlifyException(e1);
       }
 
     });
