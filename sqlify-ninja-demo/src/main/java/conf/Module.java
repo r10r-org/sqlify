@@ -18,13 +18,13 @@ package conf;
 
 import com.google.inject.AbstractModule;
 import ninja.flyway.NinjaFlyway;
-import ninja.jdbc.NinjaDbDatasources;
+import ninja.jdbc.NinjaDbHikariModule;
 
 public class Module extends AbstractModule {
 
     protected void configure() {
         
-        install(new NinjaDbDatasources());
+        install(new NinjaDbHikariModule());
         
         install(new NinjaFlyway());
     }

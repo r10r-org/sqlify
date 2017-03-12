@@ -115,13 +115,13 @@
         <dependency>
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-db-hikari</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0-beta1</version>
         </dependency>
         
         <dependency>
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-db-flyway</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0-beta1</version>
         </dependency>
 
         <dependency>
