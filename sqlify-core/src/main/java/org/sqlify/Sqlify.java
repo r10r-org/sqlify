@@ -1,7 +1,10 @@
 package org.sqlify;
 
+import java.math.BigDecimal;
+import java.net.URL;
 import org.sqlify.resultparser.ResultParser;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -94,22 +97,36 @@ public final class Sqlify<T> {
         Object value = parameterMap.get(parametersInSqlSorted.get(i));
         int positionInPreparedStatement = i + 1; // jdbc parameters start with 1...
         
-        if (value instanceof String) {
-          preparedStatement.setString(positionInPreparedStatement, (String) value);
-        } else if (value instanceof Long) {
-          preparedStatement.setLong(positionInPreparedStatement, (Long) value);
+        if (value instanceof BigDecimal) {
+          preparedStatement.setBigDecimal(positionInPreparedStatement, (BigDecimal) value);
+        } else if (value instanceof Boolean) {
+          preparedStatement.setBoolean(positionInPreparedStatement, (Boolean) value);
         } else if (value instanceof Integer) {
           preparedStatement.setInt(positionInPreparedStatement, (Integer) value);
-        } else if (value instanceof Timestamp) {
-          preparedStatement.setTimestamp(positionInPreparedStatement, (Timestamp) value);
+        } else if (value instanceof Date) {
+          preparedStatement.setDate(positionInPreparedStatement, (Date) value);
+        } else if (value instanceof Double) {
+          preparedStatement.setDouble(positionInPreparedStatement, (Double) value);
+        } else if (value instanceof Float) {
+          preparedStatement.setFloat(positionInPreparedStatement, (Float) value);
+        } else if (value instanceof Integer) {
+          preparedStatement.setInt(positionInPreparedStatement, (Integer) value);
+        } else if (value instanceof Long) {
+          preparedStatement.setLong(positionInPreparedStatement, (Long) value);
+        } else if (value instanceof Short) {
+          preparedStatement.setShort(positionInPreparedStatement, (Short) value);
+        } else if (value instanceof String) {
+          preparedStatement.setString(positionInPreparedStatement, (String) value);
         } else if (value instanceof Time) {
           preparedStatement.setTime(positionInPreparedStatement, (Time) value);
+        } else if (value instanceof Timestamp) {
+          preparedStatement.setTimestamp(positionInPreparedStatement, (Timestamp) value);
+        } else if (value instanceof URL) {
+          preparedStatement.setURL(positionInPreparedStatement, (URL) value);
         } else {
-          // Add more type conversions here.
-          throw new SqlifyException(
-              "Ops - Mapping from type to jdbc not (yet) supported: " 
-                  + value.getClass().getName()
-                  + ". You can help by adding the mapping to the source code.");
+          // Kind of a fallback. If you expect some other behavior feel
+          // free to implement it.
+          preparedStatement.setObject(positionInPreparedStatement, value);
         }
       }
     } catch (SQLException ex) {
