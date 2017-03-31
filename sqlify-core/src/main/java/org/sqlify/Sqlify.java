@@ -8,24 +8,25 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class Sqlify<T> {
+public final class Sqlify<T> {
 
   private final String sql;
   private final ResultParser<T> resultParser;
   private final LinkedHashMap<String, Object> parameterMap;
-  private final Map<String, Integer> positionToNameMap;
+  private final List<String> parametersInSqlSorted;
 
   private Sqlify(String sql, ResultParser<T> resultParser, LinkedHashMap<String, Object> parameterMap) {
     this.sql = sql;
     this.resultParser = resultParser;
     this.parameterMap = parameterMap;
-    this.positionToNameMap = extractNameAndPosition(sql, parameterMap);
+    this.parametersInSqlSorted = extractNameAndPosition(sql);
   }
 
   private T executeSelect(Connection connection) {
@@ -43,7 +44,7 @@ public class Sqlify<T> {
     try {
       String convertedPreparedStatement = convertIntoPreparedStatement(sql);
       PreparedStatement preparedStatement = connection.prepareStatement(convertedPreparedStatement);
-      applyParameterMapToPreparedStatement(preparedStatement, parameterMap, positionToNameMap);
+      applyParameterMapToPreparedStatement(preparedStatement, parameterMap, parametersInSqlSorted);
       int numberOfChangedLines = preparedStatement.executeUpdate();
       return numberOfChangedLines;
     } catch (SQLException ex) {
@@ -57,7 +58,7 @@ public class Sqlify<T> {
       PreparedStatement preparedStatement = connection.prepareStatement(
           convertedPreparedStatement, 
           Statement.RETURN_GENERATED_KEYS);
-      applyParameterMapToPreparedStatement(preparedStatement, parameterMap, positionToNameMap);
+      applyParameterMapToPreparedStatement(preparedStatement, parameterMap, parametersInSqlSorted);
       preparedStatement.executeUpdate();
       ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
       return resultParser.parseResultSet(generatedKeys);
@@ -67,58 +68,52 @@ public class Sqlify<T> {
   }
 
   // insert into table(name) values ({name}) => insert into table(name) values (?)
-  private String convertIntoPreparedStatement(String sql) {
-    return sql.replaceAll("\\{.*?\\}", "?");
+  private String convertIntoPreparedStatement(String sqlWithNamedPlaceholers) {
+    return sqlWithNamedPlaceholers.replaceAll("\\{.*?\\}", "?");
   }
 
-  private String withBraces(String rawKey) {
-    return "{" + rawKey + "}";
-  }
+  private List<String> extractNameAndPosition(String userSpecifiedSql) {
+    List<String> allParametersSorted = new ArrayList<>();
 
-  // insert into table(name) values ({name}) => insert into table(name) values (?)
-  private Map<String, Integer> extractNameAndPosition(String userSpecifiedSql, Map<String, Object> parameterMap) {
-    // some ugly code... that should work better...
-    Map<Integer, String> indexToKey = new HashMap<>();
-    for (String key : parameterMap.keySet()) {
-      String keyWithBraces = withBraces(key);
-      int index = userSpecifiedSql.indexOf(keyWithBraces);
-      indexToKey.put(index, key);
+    Pattern p = Pattern.compile("\\{(.*?)\\}");
+    Matcher m = p.matcher(userSpecifiedSql);
+    while (m.find()) {
+      String name = m.group(1);
+      allParametersSorted.add(name);
     }
-    List<String> parametersSortedByAppearenceInSql = indexToKey.entrySet().stream().sorted((e1, e2) -> {
-      return e1.getKey() - e2.getKey();
-    }).map((e) -> e.getValue()).collect(Collectors.toList());
-    Map<String, Integer> nameAndPosition = new HashMap<>();
-    for (int i = 0; i < parametersSortedByAppearenceInSql.size(); i++) {
-      int indexPositionForJdbc = i + 1;
-      nameAndPosition.put(parametersSortedByAppearenceInSql.get(i), indexPositionForJdbc);
-    }
-    return nameAndPosition;
+
+    return allParametersSorted;
   }
 
   private PreparedStatement applyParameterMapToPreparedStatement(
       PreparedStatement preparedStatement, 
       Map<String, Object> parameterMap, 
-      Map<String, Integer> positionToNameMap) {
+      List<String> parametersInSqlSorted) {
     try {
-      for (Map.Entry<String, Object> entrySet : parameterMap.entrySet()) {
-        int i = positionToNameMap.get(entrySet.getKey()); // FIXME => get exception...
-        if (entrySet.getValue() instanceof String) {
-          preparedStatement.setString(i, (String) entrySet.getValue());
-        } else if (entrySet.getValue() instanceof Long) {
-          preparedStatement.setLong(i, (Long) entrySet.getValue());
-        } else if (entrySet.getValue() instanceof Integer) {
-          preparedStatement.setInt(i, (Integer) entrySet.getValue());
-        } else if (entrySet.getValue() instanceof Timestamp) {
-          preparedStatement.setTimestamp(i, (Timestamp) entrySet.getValue());
-        } else if (entrySet.getValue() instanceof Time) {
-          preparedStatement.setTime(i, (Time) entrySet.getValue());
+      for (int i = 0; i < parametersInSqlSorted.size(); i++) {
+        Object value = parameterMap.get(parametersInSqlSorted.get(i));
+        int positionInPreparedStatement = i + 1; // jdbc parameters start with 1...
+        
+        if (value instanceof String) {
+          preparedStatement.setString(positionInPreparedStatement, (String) value);
+        } else if (value instanceof Long) {
+          preparedStatement.setLong(positionInPreparedStatement, (Long) value);
+        } else if (value instanceof Integer) {
+          preparedStatement.setInt(positionInPreparedStatement, (Integer) value);
+        } else if (value instanceof Timestamp) {
+          preparedStatement.setTimestamp(positionInPreparedStatement, (Timestamp) value);
+        } else if (value instanceof Time) {
+          preparedStatement.setTime(positionInPreparedStatement, (Time) value);
         } else {
-          //TODO add more conversions
-          throw new SqlifyException("ops... type not supported...");
+          // Add more type conversions here.
+          throw new SqlifyException(
+              "Ops - Mapping from type to jdbc not (yet) supported: " 
+                  + value.getClass().getName()
+                  + ". You can help by adding the mapping to the source code.");
         }
       }
     } catch (SQLException ex) {
-      throw new SqlifyException("ops... sql error ocurred...", ex);
+      throw new SqlifyException("Ops. An error occurred.", ex);
     }
     return preparedStatement;
   }
@@ -132,8 +127,8 @@ public class Sqlify<T> {
 
   public static class Builder1<E> {
 
-    private String sql;
-    private LinkedHashMap<String, Object> parameterMap;
+    private final String sql;
+    private final LinkedHashMap<String, Object> parameterMap;
     private ResultParser<E> resultParser;
 
     public Builder1(String sql) {
@@ -151,19 +146,41 @@ public class Sqlify<T> {
       return this;
     }
 
+    /**
+     * Executes a select. Use 'parseResultWith' to specify a parser that will
+     * map the result to nice Java objects.
+     * 
+     * @param connection The connection to use for this query.
+     * @return The result as specified via 'parseResultWith'
+     */
     public E executeSelect(Connection connection) {
-      Sqlify<E> sql = new Sqlify<>(this.sql, this.resultParser, this.parameterMap);
-      return sql.<E>executeSelect(connection);
+      Sqlify<E> sqlify = new Sqlify<>(this.sql, this.resultParser, this.parameterMap);
+      return sqlify.<E>executeSelect(connection);
     }
 
+    /**
+     * Executes an update (insert, delete statement)
+     * 
+     * @param connection The connection to use for this query.
+     * @return The number of lines affected by this query.
+     */
     public int executeUpdate(Connection connection) {
-      Sqlify<E> sql = new Sqlify<>(this.sql, this.resultParser, this.parameterMap);
-      return sql.<E>executeUpdate(connection);
+      Sqlify<E> sqlify = new Sqlify<>(this.sql, this.resultParser, this.parameterMap);
+      return sqlify.<E>executeUpdate(connection);
     }
     
+    /**
+     * Executes an update (insert, delete statement) and returns the generated
+     * key. Define the mapping via a ResultParser. For instance if you expect
+     * one Long as result you can use 
+     * parseResultWith(SingleResultParser.of(Long.class))
+     * 
+     * @param connection The connection to use for this query.
+     * @return The generated key.
+     */
     public E executeUpdateAndReturnGeneratedKey(Connection connection) {
-      Sqlify<E> sql = new Sqlify<>(this.sql, this.resultParser, this.parameterMap);
-      return sql.<E>executeUpdateAndReturnGeneratedKey(connection);
+      Sqlify<E> sqlify = new Sqlify<>(this.sql, this.resultParser, this.parameterMap);
+      return sqlify.<E>executeUpdateAndReturnGeneratedKey(connection);
     }
 
   }

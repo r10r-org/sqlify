@@ -25,20 +25,26 @@ public class GuestbooksServiceSqlify {
   }
 
   public List<Guestbook> listGuestBookEntries() {
-    return ConnectionManager.withConnection(ninjaDatasource.getDataSource(), connection
-        -> {
-      List<Guestbook> result = Sqlify.<List<Guestbook>>sql("SELECT id, email, content FROM guestbooks")
-          .parseResultWith(ListResultParser.of(Guestbook.class))
-          .executeSelect(connection);
-      return result;
-
+    return ConnectionManager.withConnection(
+        ninjaDatasource.getDataSource(), 
+        connection -> {
+          List<Guestbook> result 
+              = Sqlify.<List<Guestbook>>sql(
+                  "SELECT id, email, content "
+                  + "FROM guestbooks")
+              .parseResultWith(ListResultParser.of(Guestbook.class))
+              .executeSelect(connection);
+          return result;
     }
     );
   }
 
   public Long createGuestbook(Guestbook guestbook) {
-    return ConnectionManager.withTransaction(ninjaDatasource.getDataSource(), connection
-        -> Sqlify.<Long>sql("INSERT INTO guestbooks (email, content) VALUES ({email}, {content})")
+    return ConnectionManager.withTransaction(
+        ninjaDatasource.getDataSource(), 
+        connection -> Sqlify.<Long>sql(
+              "INSERT INTO guestbooks (email, content) "
+              + "VALUES ({email}, {content})")
             .withParameter("email", guestbook.email)
             .withParameter("content", guestbook.content)
             .parseResultWith(SingleResultParser.of(Long.class))

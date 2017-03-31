@@ -5,29 +5,32 @@
 # Intro
 
 Goals:
-- Use SQL to run queries.
-- Simple mapping of results to Pojo objects.
-- Modern syntax using Java8 goodies.
+- Simplicity. Just a thin wrapper to execute SQL queries and map results to nice
+  Java objects.
+- Modern syntax using Java 8 goodies.
 - No magic. Easy to debug in case of problems.
 
-# Code
+Non-Goals:
+- Provide an abstraction of the database
+- Provide support for typesafe SQL queries (look for jooq and friends in that case)
 
-But code speaks more than 1000 words. So how does it look like?
+# Code
 
 ## SELECT query
 
 A simple query looks like:
+
 ```
 public List<Guestbook> listGuestBookEntries() {
-  return ConnectionManager.withConnection(ninjaDatasource.getDataSource(), connection
-      -> {
-    List<Guestbook> result = Sqlify.<List<Guestbook>>sql("SELECT id, email, content FROM guestbooks")
-        .parseResultWith(ListResultParser.of(Guestbook.class))
-        .executeSelect(connection);
+  // The ConnectionManager simplifies the management of database connections
+  return ConnectionManager.withConnection(ninjaDatasource.getDataSource(), connection -> {
+    // simple sql query that specifies a mapper to parse the result
+    List<Guestbook> result = Sqlify.<List<Guestbook>>sql(
+      "SELECT id, email, content FROM guestbooks")
+      .parseResultWith(ListResultParser.of(Guestbook.class))
+      .executeSelect(connection);
     return result;
-
-  }
-  );
+  });
 }
 ```
 
@@ -42,12 +45,13 @@ And an INSERT statement looks like that:
 
 ```
 public Long createGuestbook(Guestbook guestbook) {
-  return ConnectionManager.withTransaction(ninjaDatasource.getDataSource(), connection
-      -> Sqlify.<Long>sql("INSERT INTO guestbooks (email, content) VALUES ({email}, {content})")
-          .withParameter("email", guestbook.email)
-          .withParameter("content", guestbook.content)
-          .parseResultWith(SingleResultParser.of(Long.class))
-          .executeUpdateAndReturnGeneratedKey(connection)
+  return ConnectionManager.withTransaction(ninjaDatasource.getDataSource(), connection -> 
+    Sqlify.<Long>sql(
+      "INSERT INTO guestbooks (email, content) VALUES ({email}, {content})")
+      .withParameter("email", guestbook.email)
+      .withParameter("content", guestbook.content)
+      .parseResultWith(SingleResultParser.of(Long.class))
+      .executeUpdateAndReturnGeneratedKey(connection)
   );
 }
 ```
