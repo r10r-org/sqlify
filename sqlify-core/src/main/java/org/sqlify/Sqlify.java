@@ -18,21 +18,21 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class Sqlify<T> {
+public final class Sqlify {
 
   private final String sql;
-  private final ResultParser<T> resultParser;
+  private final ResultParser<?> resultParser;
   private final LinkedHashMap<String, Object> parameterMap;
   private final List<String> parametersInSqlSorted;
 
-  private Sqlify(String sql, ResultParser<T> resultParser, LinkedHashMap<String, Object> parameterMap) {
+  private Sqlify(String sql, ResultParser<?> resultParser, LinkedHashMap<String, Object> parameterMap) {
     this.sql = sql;
     this.resultParser = resultParser;
     this.parameterMap = parameterMap;
     this.parametersInSqlSorted = extractNameAndPosition(sql);
   }
 
-  private T executeSelect(Connection connection) {
+  private <T> T executeSelect(Connection connection) {
     try {
       PreparedStatement preparedStatement = connection.prepareStatement(sql);
       ResultSet resultSet = preparedStatement.executeQuery();
@@ -55,7 +55,7 @@ public final class Sqlify<T> {
     }
   }
   
-  private T executeUpdateAndReturnGeneratedKey(Connection connection) {
+  private <T> T executeUpdateAndReturnGeneratedKey(Connection connection) {
     try {
       String convertedPreparedStatement = convertIntoPreparedStatement(sql);
       PreparedStatement preparedStatement = connection.prepareStatement(
@@ -138,27 +138,27 @@ public final class Sqlify<T> {
   ////////////////////////////////////////////////////////////////////////////
   // Builder pattern
   ////////////////////////////////////////////////////////////////////////////
-  public static <E> Builder1<E> sql(String sql) {
-    return new Builder1<>(sql);
+  public static Builder1 sql(String sql) {
+    return new Builder1(sql);
   }
 
-  public static class Builder1<E> {
+  public static class Builder1 {
 
     private final String sql;
     private final LinkedHashMap<String, Object> parameterMap;
-    private ResultParser<E> resultParser;
+    private ResultParser<?> resultParser;
 
     public Builder1(String sql) {
       this.sql = sql;
       this.parameterMap = new LinkedHashMap<>();
     }
 
-    public Builder1<E> withParameter(String key, Object value) {
+    public Builder1 withParameter(String key, Object value) {
       parameterMap.put(key, value);
       return this;
     }
 
-    public Builder1<E> parseResultWith(ResultParser<E> resultParser) {
+    public Builder1 parseResultWith(ResultParser<?> resultParser) {
       this.resultParser = resultParser;
       return this;
     }
@@ -170,8 +170,8 @@ public final class Sqlify<T> {
      * @param connection The connection to use for this query.
      * @return The result as specified via 'parseResultWith'
      */
-    public E executeSelect(Connection connection) {
-      Sqlify<E> sqlify = new Sqlify<>(this.sql, this.resultParser, this.parameterMap);
+    public <E> E executeSelect(Connection connection) {
+      Sqlify sqlify = new Sqlify(this.sql, this.resultParser, this.parameterMap);
       return sqlify.<E>executeSelect(connection);
     }
 
@@ -182,8 +182,8 @@ public final class Sqlify<T> {
      * @return The number of lines affected by this query.
      */
     public int executeUpdate(Connection connection) {
-      Sqlify<E> sqlify = new Sqlify<>(this.sql, this.resultParser, this.parameterMap);
-      return sqlify.<E>executeUpdate(connection);
+      Sqlify sqlify = new Sqlify(this.sql, this.resultParser, this.parameterMap);
+      return sqlify.executeUpdate(connection);
     }
     
     /**
@@ -195,8 +195,8 @@ public final class Sqlify<T> {
      * @param connection The connection to use for this query.
      * @return The generated key.
      */
-    public E executeUpdateAndReturnGeneratedKey(Connection connection) {
-      Sqlify<E> sqlify = new Sqlify<>(this.sql, this.resultParser, this.parameterMap);
+    public <E> E executeUpdateAndReturnGeneratedKey(Connection connection) {
+      Sqlify sqlify = new Sqlify(this.sql, this.resultParser, this.parameterMap);
       return sqlify.<E>executeUpdateAndReturnGeneratedKey(connection);
     }
 
