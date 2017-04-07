@@ -9,12 +9,17 @@ public class SingleOptionalResultParser<T> implements ResultParser<Optional<T>> 
 
   private final RowParser<T> rowParser;
 
-  private SingleOptionalResultParser(Class<T> clazz) {
-    this.rowParser = RowParsers.<T>getRowParserFor(clazz);
+  private SingleOptionalResultParser(RowParser<T> rowParser) {
+    this.rowParser = rowParser;
+  }
+  
+  public static <E> SingleOptionalResultParser<E> of(RowParser<E> rowParser) {
+    return new SingleOptionalResultParser(rowParser);
   }
 
   public static <E> SingleOptionalResultParser<E> of(Class<E> clazz) {
-    return new SingleOptionalResultParser<>(clazz);
+    RowParser<E> rowParser = RowParsers.getRowParserFor(clazz);
+    return new SingleOptionalResultParser(rowParser);
   }
 
   @Override

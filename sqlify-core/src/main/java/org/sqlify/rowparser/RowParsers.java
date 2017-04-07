@@ -1,8 +1,13 @@
 package org.sqlify.rowparser;
 
-// able to parse the result of one row into something useful.
 public class RowParsers<T> {
 
+  /**
+   * Determines the default RowParser for a class.
+   * 
+   * Use your own RowParser implementation if you need something more flexible.
+   * 
+   */  
   public static <E> RowParser getRowParserFor(Class<E> e) {
     if (e == String.class) {
       return new OneStringRowParser();

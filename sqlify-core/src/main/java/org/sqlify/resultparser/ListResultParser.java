@@ -9,13 +9,35 @@ import org.sqlify.rowparser.RowParser;
 public class ListResultParser<T> implements ResultParser<List<T>> {
 
   private final RowParser<T> rowParser;
-
-  private ListResultParser(Class<T> clazz) {
-    this.rowParser = RowParsers.<T>getRowParserFor(clazz);
+  
+  private ListResultParser(RowParser<T> rowParser) {
+    this.rowParser = rowParser;
+  }
+  
+  /**
+   * Define your own RowParser. Full flexibility.
+   * 
+   * @param <E> The type the RowParser will return
+   * @param rowParser The RowParser to use
+   * @return The ListResultParser that will use the defined RowParser to parse
+   *         rows.
+   */
+  public static <E> ListResultParser<E> of(RowParser<E> rowParser) {
+    return new ListResultParser(rowParser);
   }
 
+  /**
+   * Define your own RowParser. Full flexibility.
+   * 
+   * @param <E> The type the RowParser will return
+   * @param clazz Class that determines the RowParser. See RowParsers how
+   *              the class is resolved.
+   * @return The ListResultParser that will use the defined RowParser to parse
+   *         rows.
+   */
   public static <E> ListResultParser<E> of(Class<E> clazz) {
-    return new ListResultParser<>(clazz);
+    RowParser<E> rowParser = RowParsers.getRowParserFor(clazz);
+    return new ListResultParser(rowParser);
   }
 
   @Override
