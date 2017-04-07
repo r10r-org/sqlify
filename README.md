@@ -22,15 +22,12 @@ A simple query looks like:
 
 ```
 public List<Guestbook> listGuestBookEntries() {
-  // The ConnectionManager simplifies the management of database connections
-  return ConnectionManager.withConnection(ninjaDatasource.getDataSource(), connection -> {
-    // simple sql query that specifies a mapper to parse the result
-    List<Guestbook> result = Sqlify.<List<Guestbook>>sql(
+  return database.withConnection(connection -> 
+    Sqlify.sql(
       "SELECT id, email, content FROM guestbooks")
       .parseResultWith(ListResultParser.of(Guestbook.class))
-      .executeSelect(connection);
-    return result;
-  });
+      .executeSelect(connection)
+  );
 }
 ```
 
@@ -45,15 +42,14 @@ And an INSERT statement looks like that:
 
 ```
 public Long createGuestbook(Guestbook guestbook) {
-  return ConnectionManager.withTransaction(ninjaDatasource.getDataSource(), connection -> 
-    Sqlify.<Long>sql(
+  return database.withTransaction(connection -> 
+    Sqlify.sql(
       "INSERT INTO guestbooks (email, content) VALUES ({email}, {content})")
       .withParameter("email", guestbook.email)
       .withParameter("content", guestbook.content)
       .parseResultWith(SingleResultParser.of(Long.class))
       .executeUpdateAndReturnGeneratedKey(connection)
   );
-}
 ```
 
 Note that Sqlify supports named parameters and also allows to return generated
