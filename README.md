@@ -178,7 +178,7 @@ ListResultParser, SingleResultParser and SingleOptionalResultParser are examples
 
 The ResultPareser itself does not parse individual rows - that's where RowParsers come into play.
 
-We have have already seen that - for instance - the ListResultParser can automatically determine the mapping of the indivdual rows via ListResultParser.of(Guestbook.class) or ListResultParser.of(Long.class). For many use-cases that is enough, but if you have very specifiy requirements you can also implement your own RowParser.
+We have have already seen that - for instance - the ListResultParser can automatically determine the mapping of the indivdual rows via ListResultParser.of(Guestbook.class) or ListResultParser.of(Long.class). For many use-cases that is enough, but if you have very specific requirements you can also implement your own RowParser.
 
 ```
 RowParser mySpecialRowParser = new MySpecialRowPaser();
