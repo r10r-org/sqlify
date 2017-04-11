@@ -8,8 +8,7 @@ Sqlify is our best attempt to provide a library that is as close to SQL as possi
 Goals:
 - Simplicity. Just a thin wrapper to execute SQL queries and map results to nice Java objects.
 - Modern syntax using Java 8 goodies.
-- No magic. Easy to debug in case of problems.
-- Exceptions are not checked by default. But you can catch them if needed.
+- No magic. No annotations. Easy to use and easy to debug in case of problems.
 
 Non-Goals:
 - Sqlify does NOT provide an abstraction of the database. Check out Hibernate if you need something like that.
@@ -58,6 +57,10 @@ keys using a simple command. In addition this query is executed inside
 a transaction (database.withTransaction(...()). 
 
 # Concepts
+
+## Unchecked exceptions
+
+Sqlify does not use any checked exceptions. That makes default operation and usage of Sqlify straight forward. If you want to recover from certain error conditions you can catch Sqlify's SqlifyException. SqlifyException always contains the  exception that caused it.
 
 ## Database - an utility to get connections and transactions
 
