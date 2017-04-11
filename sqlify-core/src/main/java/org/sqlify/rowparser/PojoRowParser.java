@@ -57,25 +57,25 @@ public class PojoRowParser<E> implements RowParser<E> {
       if (type == BigDecimal.class) {
         BigDecimal value = resultSet.getBigDecimal(name);
         field.set(e, value);
-      } else if (type == Boolean.class) {
+      } else if (type == Boolean.class || type == boolean.class) {
         Boolean value = resultSet.getBoolean(name);
         field.set(e, value);
       } else if (type == Date.class) {
         Date value = resultSet.getDate(name);
         field.set(e, value);
-      } else if (type == Double.class) {
+      } else if (type == Double.class || type == double.class) {
         Double value = resultSet.getDouble(name);
         field.set(e, value);
-      } else if (type == Float.class) {
+      } else if (type == Float.class || type == float.class) {
         Float value = resultSet.getFloat(name);
         field.set(e, value);
-      } else if (type == Integer.class) {
+      } else if (type == Integer.class || type == int.class) {
         Integer value = resultSet.getInt(name);
         field.set(e, value);
-      } else if (type == Long.class) {
+      } else if (type == Long.class || type == long.class) {
         Long value = resultSet.getLong(name);
         field.set(e, value);
-      } else if (type == Short.class) {
+      } else if (type == Short.class || type == short.class) {
         Short value = resultSet.getShort(name);
         field.set(e, value);
       } else if (type == String.class) {
