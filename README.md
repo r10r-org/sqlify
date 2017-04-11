@@ -9,10 +9,11 @@ Goals:
   Java objects.
 - Modern syntax using Java 8 goodies.
 - No magic. Easy to debug in case of problems.
+- Exceptions are not checked by default. But you can catch them if needed.
 
 Non-Goals:
-- Provide an abstraction of the database
-- Provide support for typesafe SQL queries (look for jooq and friends in that case)
+- It does NOT provide an abstraction of the database.
+- It does NOT Provide support for typesafe SQL queries (look for jooq and friends in that case).
 
 # Code
 
@@ -53,5 +54,6 @@ public Long createGuestbook(Guestbook guestbook) {
 ```
 
 Note that Sqlify supports named parameters and also allows to return generated
-keys using a simple command.
+keys using a simple command. In addition this query is executed inside
+a transaction (database.withTransaction(...()). 
 
