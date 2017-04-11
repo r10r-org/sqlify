@@ -1,21 +1,18 @@
-# sqlify - Finest Java SQL library
-
-- Continuous integration: [![Build Status](https://api.travis-ci.org/raphaelbauer/sqlify.svg)](https://travis-ci.org/raphaelbauer/sqlify)
+# Sqlify - Java's finest SQL library [![Build Status](https://api.travis-ci.org/raphaelbauer/sqlify.svg)](https://travis-ci.org/raphaelbauer/sqlify)
 
 # Intro
 
 Goals:
-- Simplicity. Just a thin wrapper to execute SQL queries and map results to nice
-  Java objects.
+- Simplicity. Just a thin wrapper to execute SQL queries and map results to nice Java objects.
 - Modern syntax using Java 8 goodies.
 - No magic. Easy to debug in case of problems.
 - Exceptions are not checked by default. But you can catch them if needed.
 
 Non-Goals:
-- It does NOT provide an abstraction of the database.
-- It does NOT Provide support for typesafe SQL queries (look for jooq and friends in that case).
+- Sqlify does NOT provide an abstraction of the database. Check out Hibernate if you need something like that.
+- Sqlify does NOT Provide support for type-safe SQL queries. Look for jooq and friends in that case.
 
-# Code
+# Quick start
 
 ## SELECT query
 
@@ -57,3 +54,137 @@ Note that Sqlify supports named parameters and also allows to return generated
 keys using a simple command. In addition this query is executed inside
 a transaction (database.withTransaction(...()). 
 
+# Concepts
+
+## Database - an utility to get connections and transactions
+
+In order to execute SQL queries you generally need a connection or a transaction.
+Sqlify provides a utility called "Database" that can provide connections to Sqlify.
+
+```
+public class GuestbooksServiceSqlify {
+
+  private final Database database;
+
+  @Inject
+  public GuestbooksServiceSqlify(NinjaDatasources ninjaDatasources) {
+    // an example from Ninja. But any jdbc Datasource (Spring, JEE...) works.
+    database = Database.from(ninjaDatasources.getDatasource("default").getDataSource());
+  }
+
+  public List<Guestbook> listGuestBookEntries() {
+    return database.withConnection(connection ->
+      Sqlify.sql(
+        "SELECT id, email, content FROM guestbooks")
+        .parseResultWith(ListResultParser.of(Guestbook.class))
+        .executeSelect(connection)
+    );
+  }
+
+  ...
+
+```
+
+The Database utility can also run sql queries inside one transaction:
+
+```
+public Long createGuestbook(Guestbook guestbook) {
+  return database.withTransaction(connection -> 
+    Sqlify.sql(
+      "INSERT INTO guestbooks (email, content) VALUES ({email}, {content})")
+      .withParameter("email", guestbook.email)
+      .withParameter("content", guestbook.content)
+      .parseResultWith(SingleResultParser.of(Long.class))
+      .executeUpdateAndReturnGeneratedKey(connection)
+  );
+}
+```
+
+## SQL and parameters
+
+Sqlify uses named parameters to map values to something inside an Sql statement.
+Named parameters are escaped and protect your from any form of Sql injection.
+
+```
+Sqlify.sql(
+  "INSERT INTO guestbooks (email, content) VALUES ({email}, {content})")
+  .withParameter("email", guestbook.email)
+  .withParameter("content", guestbook.content)
+  .parseResultWith(SingleResultParser.of(Long.class))
+  .executeUpdateAndReturnGeneratedKey(connection)
+);
+```
+
+Named parameters in Sql queries are enclosed in curly braces ('{email}'). The
+parameters themselves can be set via .withParameter("content", guestbook.content)
+for instance.
+
+## Resultparsers
+
+Sql queries often create some kind of output. Sqlify can map the output to what the user expects.
+
+There are basically three different resultparsers the user can choose from:
+
+* ListResultParser
+* SingleResultParser
+* SingleOptionalResultParser
+
+### ListResultParser
+
+The ListResultParser will return a List<...> of items. 
+
+```
+  return database.withConnection(connection -> {
+    List<Guestbook> guestbooks = Sqlify.sql(
+      "SELECT id, email, content FROM guestbooks")
+      .parseResultWith(ListResultParser.of(Guestbook.class))
+      .executeSelect(connection)
+    return guestbooks;
+  });
+}
+```
+
+In that example a select query is executed that will return all "guestbook" items stored in the database. Also note that ListResultParser.of(Guestbook.class) will automatically map column names to field names in the Guestbook class.
+
+### SingleResultParser
+
+The SingleResultParser expects exactly one result. If the query returns zero results, then an exeption is thrown.
+
+The folloing example shows an insert statement that returns a Long as generated key via '.parseResultWith(SingleResultParser.of(Long.class))'.
+
+```
+Sqlify.sql(
+  "INSERT INTO guestbooks (email, content) VALUES ({email}, {content})")
+  .withParameter("email", guestbook.email)
+  .withParameter("content", guestbook.content)
+  .parseResultWith(SingleResultParser.of(Long.class))
+  .executeUpdateAndReturnGeneratedKey(connection)
+);
+```
+
+### SingleOptionalResultParser
+
+The SingleOptionalResultParser may return one or zero values. It works similar to the SingleResultParser, but returns an Optional<...>. The Optional is empty if nothing can be found, or contains the result.
+
+## ResulParser and RowParser
+
+ListResultParser, SingleResultParser and SingleOptionalResultParser are examples of a ResultParser. A ResultParser is responsible to parse an entire result - bascially all rows of a resulset and iterate over it.
+
+The ResultPareser itself does not parse individual rows - that's where RowParsers come into play.
+
+We have have already seen that - for instance - the ListResultParser can automatically determine the mapping of the indivdual rows via ListResultParser.of(Guestbook.class) or ListResultParser.of(Long.class). For many use-cases that is enough, but if you have very specifiy requirements you can also implement your own RowParser.
+
+```
+RowParser mySpecialRowParser = new MySpecialRowPaser();
+
+return database.withConnection(connection -> {
+  List<Guestbook> guestbooks = Sqlify.sql(
+    "SELECT id, email, content FROM guestbooks")
+    .parseResultWith(ListResultParser.of(mySpecialRowParser))     // <-- Tell Sqlify to use your own RowParser
+    .executeSelect(connection)
+  return guestbooks;
+});
+
+```
+
+Both ResultPaser and RowParser are only interfaces and you can specify any mapping you want in method '.parseResultWith(mySpecialCustomResultParser))'.
