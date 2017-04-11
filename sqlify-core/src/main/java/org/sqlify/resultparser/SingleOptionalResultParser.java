@@ -13,12 +13,20 @@ public class SingleOptionalResultParser<T> implements ResultParser<Optional<T>> 
     this.rowParser = rowParser;
   }
   
+  /**
+   * Define your own RowParser. Full flexibility.
+   * 
+   * @param <E> The type the RowParser will return
+   * @param rowParser The RowParser to use
+   * @return The ListResultParser that will use the defined RowParser to parse
+   *         rows.
+   */
   public static <E> SingleOptionalResultParser<E> of(RowParser<E> rowParser) {
     return new SingleOptionalResultParser(rowParser);
   }
 
   public static <E> SingleOptionalResultParser<E> of(Class<E> clazz) {
-    RowParser<E> rowParser = RowParsers.getRowParserFor(clazz);
+    RowParser<E> rowParser = RowParsers.getDefaultParserFor(clazz);
     return new SingleOptionalResultParser(rowParser);
   }
 

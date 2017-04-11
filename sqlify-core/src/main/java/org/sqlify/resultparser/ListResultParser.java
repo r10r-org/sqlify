@@ -26,17 +26,8 @@ public class ListResultParser<T> implements ResultParser<List<T>> {
     return new ListResultParser(rowParser);
   }
 
-  /**
-   * Define your own RowParser. Full flexibility.
-   * 
-   * @param <E> The type the RowParser will return
-   * @param clazz Class that determines the RowParser. See RowParsers how
-   *              the class is resolved.
-   * @return The ListResultParser that will use the defined RowParser to parse
-   *         rows.
-   */
   public static <E> ListResultParser<E> of(Class<E> clazz) {
-    RowParser<E> rowParser = RowParsers.getRowParserFor(clazz);
+    RowParser<E> rowParser = RowParsers.getDefaultParserFor(clazz);
     return new ListResultParser(rowParser);
   }
 

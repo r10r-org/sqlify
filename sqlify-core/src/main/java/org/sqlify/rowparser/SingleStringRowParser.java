@@ -2,7 +2,7 @@ package org.sqlify.rowparser;
 
 import java.sql.ResultSet;
 
-public class OneStringRowParser implements RowParser<String> {
+public class SingleStringRowParser implements RowParser<String> {
 
   @Override
   public String parse(ResultSet resultSet) throws Exception {

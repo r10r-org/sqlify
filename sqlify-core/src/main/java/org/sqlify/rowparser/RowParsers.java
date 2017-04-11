@@ -8,11 +8,11 @@ public class RowParsers<T> {
    * Use your own RowParser implementation if you need something more flexible.
    * 
    */  
-  public static <E> RowParser getRowParserFor(Class<E> e) {
+  public static <E> RowParser getDefaultParserFor(Class<E> e) {
     if (e == String.class) {
-      return new OneStringRowParser();
+      return new SingleStringRowParser();
     } else if (e == Long.class) {
-      return new OneLongRowParser();
+      return new SingleLongRowParser();
     } else {
       return new PojoRowParser<>(e);
     }

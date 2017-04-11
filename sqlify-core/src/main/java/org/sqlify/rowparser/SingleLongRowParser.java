@@ -2,8 +2,7 @@ package org.sqlify.rowparser;
 
 import java.sql.ResultSet;
 
-
-public class OneLongRowParser implements RowParser<Long> {
+public class SingleLongRowParser implements RowParser<Long> {
     
   @Override
   public Long parse(ResultSet resultSet) throws Exception {

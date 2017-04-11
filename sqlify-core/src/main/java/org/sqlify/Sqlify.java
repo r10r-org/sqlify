@@ -101,8 +101,6 @@ public final class Sqlify {
           preparedStatement.setBigDecimal(positionInPreparedStatement, (BigDecimal) value);
         } else if (value instanceof Boolean) {
           preparedStatement.setBoolean(positionInPreparedStatement, (Boolean) value);
-        } else if (value instanceof Integer) {
-          preparedStatement.setInt(positionInPreparedStatement, (Integer) value);
         } else if (value instanceof Date) {
           preparedStatement.setDate(positionInPreparedStatement, (Date) value);
         } else if (value instanceof Double) {

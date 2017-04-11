@@ -1,12 +1,46 @@
 package org.sqlify.rowparser;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
+import java.net.URL;
+import java.sql.Date;
 import java.sql.ResultSet;
+import java.sql.Time;
+import java.sql.Timestamp;
 import org.sqlify.SqlifyException;
 
+/**
+ * A very simple parser that converts one result row into one Pojo object.
+ * 
+ * It simply uses the names and types of fields to map
+ * the corresponding column in the result row.
+ * 
+ * For instance
+ * <pre>
+ * public class MyPojo {
+ *   String name;
+ *   Integer age;
+ * }
+ * </pre>
+ * 
+ * Would work on a result like that:
+ * 
+ * | name | age |
+ * --------------
+ * | John | 23  |   ==> MyPojo with name John and age 23
+ * | Dave | 22  |   ==> MyPojo with name Dave and age 22
+ * 
+ * Note:
+ * - The parser does NOT take into account any inheritance of fields.
+ * - The parser does NOT follow any bean specification. It simply uses the fields
+ *   you declare.
+ * 
+ * @author ra
+ * @param <E> The class this parser will populate with values from a row
+ */
 public class PojoRowParser<E> implements RowParser<E> {
 
-  Class<E> clazz;
+  private final Class<E> clazz;
 
   PojoRowParser(Class<E> clazz) {
     this.clazz = clazz;
@@ -18,18 +52,48 @@ public class PojoRowParser<E> implements RowParser<E> {
     for (Field field : e.getClass().getDeclaredFields()) {
       String name = field.getName();
       Class<?> type = field.getType();
-      boolean isFieldAccessible = field.isAccessible();
+      boolean initialFieldAccessibility = field.isAccessible();
       field.setAccessible(true);
-      if (type == String.class) {
-        String value = resultSet.getString(name);
+      if (type == BigDecimal.class) {
+        BigDecimal value = resultSet.getBigDecimal(name);
+        field.set(e, value);
+      } else if (type == Boolean.class) {
+        Boolean value = resultSet.getBoolean(name);
+        field.set(e, value);
+      } else if (type == Date.class) {
+        Date value = resultSet.getDate(name);
+        field.set(e, value);
+      } else if (type == Double.class) {
+        Double value = resultSet.getDouble(name);
+        field.set(e, value);
+      } else if (type == Float.class) {
+        Float value = resultSet.getFloat(name);
         field.set(e, value);
       } else if (type == Integer.class) {
         Integer value = resultSet.getInt(name);
         field.set(e, value);
+      } else if (type == Long.class) {
+        Long value = resultSet.getLong(name);
+        field.set(e, value);
+      } else if (type == Short.class) {
+        Short value = resultSet.getShort(name);
+        field.set(e, value);
+      } else if (type == String.class) {
+        String value = resultSet.getString(name);
+        field.set(e, value);
+      } else if (type == Time.class) {
+        Time value = resultSet.getTime(name);
+        field.set(e, value);
+      } else if (type == Timestamp.class) {
+        Timestamp value = resultSet.getTimestamp(name);
+        field.set(e, value);
+      } else if (type == URL.class) {
+        URL value = resultSet.getURL(name);
+        field.set(e, value);
       } else {
         throw new SqlifyException("Ops. not supported... " + field.getName() + " -- " + field.getType());
       }
-      field.setAccessible(isFieldAccessible);
+      field.setAccessible(initialFieldAccessibility);
     }
     return e;
   }
