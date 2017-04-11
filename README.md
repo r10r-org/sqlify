@@ -2,6 +2,9 @@
 
 # Intro
 
+Sqlify is highly inspired by the awesome [Scala Anorm library](https://github.com/playframework/anorm). Unfortunately (or fortunately?) Java is quite different than Scala. 
+Sqlify is our best attempt to provide a library that is as close to SQL as possible - while at the same time being fun and easy to use for Java developers.
+
 Goals:
 - Simplicity. Just a thin wrapper to execute SQL queries and map results to nice Java objects.
 - Modern syntax using Java 8 goodies.
@@ -10,7 +13,7 @@ Goals:
 
 Non-Goals:
 - Sqlify does NOT provide an abstraction of the database. Check out Hibernate if you need something like that.
-- Sqlify does NOT Provide support for type-safe SQL queries. Look for jooq and friends in that case.
+- Sqlify does NOT Provide support for type-safe SQL queries. Look for Jooq and friends in that case.
 
 # Quick start
 
