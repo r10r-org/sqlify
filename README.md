@@ -2,7 +2,8 @@
 
 # Intro
 
-Sqlify is highly inspired by the awesome [Scala Anorm library](https://github.com/playframework/anorm). Unfortunately (or fortunately?) Java is quite different than Scala. 
+Sqlify is highly inspired by the awesome [Scala Anorm library](https://github.com/playframework/anorm). Unfortunately (or fortunately?) 
+Java is quite different than Scala. 
 Sqlify is our best attempt to provide a library that is as close to SQL as possible - while at the same time being fun and easy to use for Java developers.
 
 Goals:
@@ -140,21 +141,21 @@ There are basically three different resultparsers the user can choose from:
 The ListResultParser will return a List<...> of items. 
 
 ```
-  return database.withConnection(connection -> {
-    List<Guestbook> guestbooks = Sqlify.sql(
-      "SELECT id, email, content FROM guestbooks")
-      .parseResultWith(ListResultParser.of(Guestbook.class))
-      .executeSelect(connection)
-    return guestbooks;
-  });
-}
+return database.withConnection(connection -> {
+  List<Guestbook> guestbooks = Sqlify.sql(
+    "SELECT id, email, content FROM guestbooks")
+    .parseResultWith(ListResultParser.of(Guestbook.class))
+    .executeSelect(connection)
+  return guestbooks;
+});
 ```
 
-In that example a select query is executed that will return all "guestbook" items stored in the database. Also note that ListResultParser.of(Guestbook.class) will automatically map column names to field names in the Guestbook class.
+In that example a select query is executed that will return all "guestbook" items stored in the database. 
+Also note that ListResultParser.of(Guestbook.class) will automatically map column names to field names in the Guestbook class.
 
 ### SingleResultParser
 
-The SingleResultParser expects exactly one result. If the query returns zero results, then an exeption is thrown.
+The SingleResultParser expects exactly one result. If the query returns zero results, then an exception is thrown.
 
 The folloing example shows an insert statement that returns a Long as generated key via '.parseResultWith(SingleResultParser.of(Long.class))'.
 
@@ -170,15 +171,19 @@ Sqlify.sql(
 
 ### SingleOptionalResultParser
 
-The SingleOptionalResultParser may return one or zero values. It works similar to the SingleResultParser, but returns an Optional<...>. The Optional is empty if nothing can be found, or contains the result.
+The SingleOptionalResultParser may return one or zero values. It works similar to the SingleResultParser, 
+but returns an Optional<...>. The Optional is empty if nothing can be found, or contains the result.
 
-## ResulParser and RowParser
+## ResultParser and RowParser
 
-ListResultParser, SingleResultParser and SingleOptionalResultParser are examples of a ResultParser. A ResultParser is responsible to parse an entire result - bascially all rows of a resulset and iterate over it.
+ListResultParser, SingleResultParser and SingleOptionalResultParser are examples of a ResultParser. 
+A ResultParser is responsible to parse an entire result - basically all rows of a resultset and iterate over it.
 
 The ResultPareser itself does not parse individual rows - that's where RowParsers come into play.
 
-We have have already seen that - for instance - the ListResultParser can automatically determine the mapping of the indivdual rows via ListResultParser.of(Guestbook.class) or ListResultParser.of(Long.class). For many use-cases that is enough, but if you have very specific requirements you can also implement your own RowParser.
+We have have already seen that - for instance - the ListResultParser can automatically determine the mapping of the individual 
+rows via ListResultParser.of(Guestbook.class) or ListResultParser.of(Long.class). 
+For many use-cases that is enough, but if you have very specific requirements you can also implement your own RowParser.
 
 ```
 RowParser mySpecialRowParser = new MySpecialRowPaser();
