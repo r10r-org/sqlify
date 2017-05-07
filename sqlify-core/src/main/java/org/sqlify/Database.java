@@ -1,26 +1,21 @@
 package org.sqlify;
 
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.sql.DataSource;
 
 public class Database {
-
-  private final Connection connection;
+  
+  private DataSource dataSource;
 
   public static interface Executable<T> {
     T execute(Connection connection);
   }
 
   private Database(DataSource dataSource) {
-    try {
-      this.connection = dataSource.getConnection();
-    } catch (Exception e) {
-      throw new SqlifyException(e);
-    }
-  }
-
-  private Database(Connection connection) {
-    this.connection = connection;
+    this.dataSource = dataSource;
   }
 
   public <T> T withConnection(Executable<T> block) {
@@ -28,11 +23,21 @@ public class Database {
   }
 
   public <T> T withConnection(boolean autocommit, Executable<T> block) {
+    Connection connection = null;
     try {
+      connection = this.dataSource.getConnection();
       connection.setAutoCommit(autocommit);
       return block.execute(connection);
     } catch (Exception e) {
       throw new SqlifyException(e);
+    } finally {
+      try {
+        if (connection != null) {
+          connection.close();
+        }
+      } catch (SQLException ex) {
+       throw new SqlifyException(ex);
+      }
     }
   }
 
@@ -44,6 +49,7 @@ public class Database {
         return t;
 
       } catch (Exception e1) {
+        
         try {
           connection.rollback();
         } catch (Exception e2) {
@@ -54,15 +60,14 @@ public class Database {
       }
 
     });
-
   }
   
   //////////////////////////////////////////////////////////////////////////////
   // Simplified constructor
   //////////////////////////////////////////////////////////////////////////////
-  public static Database from(DataSource dataSource) {
-    Database connectionManager = new Database(dataSource);
-    return connectionManager;
+  public static Database use(DataSource dataSource) {
+    Database database = new Database(dataSource);
+    return database;
   }
   
 }

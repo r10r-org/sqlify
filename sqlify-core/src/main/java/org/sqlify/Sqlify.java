@@ -33,8 +33,7 @@ public final class Sqlify {
   }
 
   private <T> T executeSelect(Connection connection) {
-    try {
-      PreparedStatement preparedStatement = connection.prepareStatement(sql);
+    try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
       ResultSet resultSet = preparedStatement.executeQuery();
       T t = resultParser.parseResultSet(resultSet);
       return t;
@@ -44,9 +43,8 @@ public final class Sqlify {
   }
 
   private int executeUpdate(Connection connection) {
-    try {
-      String convertedPreparedStatement = convertIntoPreparedStatement(sql);
-      PreparedStatement preparedStatement = connection.prepareStatement(convertedPreparedStatement);
+    String convertedPreparedStatement = convertIntoPreparedStatement(sql);
+    try (PreparedStatement preparedStatement = connection.prepareStatement(convertedPreparedStatement)) {
       applyParameterMapToPreparedStatement(preparedStatement, parameterMap, parametersInSqlSorted);
       int numberOfChangedLines = preparedStatement.executeUpdate();
       return numberOfChangedLines;
@@ -56,11 +54,10 @@ public final class Sqlify {
   }
   
   private <T> T executeUpdateAndReturnGeneratedKey(Connection connection) {
-    try {
-      String convertedPreparedStatement = convertIntoPreparedStatement(sql);
-      PreparedStatement preparedStatement = connection.prepareStatement(
+    String convertedPreparedStatement = convertIntoPreparedStatement(sql);
+    try (PreparedStatement preparedStatement = connection.prepareStatement(
           convertedPreparedStatement, 
-          Statement.RETURN_GENERATED_KEYS);
+          Statement.RETURN_GENERATED_KEYS)) {
       applyParameterMapToPreparedStatement(preparedStatement, parameterMap, parametersInSqlSorted);
       preparedStatement.executeUpdate();
       ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
