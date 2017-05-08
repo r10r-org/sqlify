@@ -23,21 +23,11 @@ public class Database {
   }
 
   public <T> T withConnection(boolean autocommit, Executable<T> block) {
-    Connection connection = null;
-    try {
-      connection = this.dataSource.getConnection();
+    try (Connection connection = this.dataSource.getConnection()) {
       connection.setAutoCommit(autocommit);
       return block.execute(connection);
     } catch (Exception e) {
       throw new SqlifyException(e);
-    } finally {
-      try {
-        if (connection != null) {
-          connection.close();
-        }
-      } catch (SQLException ex) {
-       throw new SqlifyException(ex);
-      }
     }
   }
 
@@ -49,7 +39,6 @@ public class Database {
         return t;
 
       } catch (Exception e1) {
-        
         try {
           connection.rollback();
         } catch (Exception e2) {
