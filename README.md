@@ -76,7 +76,7 @@ public class GuestbooksServiceSqlify {
   @Inject
   public GuestbooksServiceSqlify(NinjaDatasources ninjaDatasources) {
     // an example from Ninja. But any jdbc Datasource (Spring, JEE...) works.
-    database = Database.from(ninjaDatasources.getDatasource("default").getDataSource());
+    database = Database.use(ninjaDatasources.getDatasource("default").getDataSource());
   }
 
   public List<Guestbook> listGuestBookEntries() {
