@@ -1,4 +1,4 @@
-# Sqlify - Java's finest SQL library [![Build Status](https://api.travis-ci.org/raphaelbauer/sqlify.svg)](https://travis-ci.org/raphaelbauer/sqlify)
+# Sqlify - Java's finest SQL library [![Build Status](https://api.travis-ci.org/r10r-org/sqlify.svg)](https://travis-ci.org/r10r-org/sqlify)
 
 # Intro
 
