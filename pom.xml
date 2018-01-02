@@ -22,7 +22,7 @@
     <groupId>org.r10r</groupId>
     <artifactId>sqlify</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0-beta2-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <url>http://github.com/raphaelbauer/sqlify</url>
 
     <!-- Deploy to central maven using the oss-parent of sonatype -->
@@ -83,20 +83,6 @@
     </properties>
 
     <build>
-        
-        <plugins>
-            <plugin>       
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.3</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <serverId>ossrh</serverId>
-                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                </configuration>
-            </plugin>
-        </plugins>
 
 
         <pluginManagement>
