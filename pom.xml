@@ -22,7 +22,7 @@
     <groupId>org.r10r</groupId>
     <artifactId>sqlify</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0-beta1</version>
     <url>http://github.com/raphaelbauer/sqlify</url>
 
     <!-- Deploy to central maven using the oss-parent of sonatype -->
