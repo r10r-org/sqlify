@@ -39,6 +39,25 @@
         <module>sqlify-core</module>
         <module>sqlify-ninja-demo</module>
     </modules>
+    
+    <scm>
+        <url>https://github.com/r10r-org/sqlify</url>
+        <connection>scm:git://github.com/r10r-org/sqlify.git</connection>
+        <developerConnection>scm:git:git@github.com:r10r-org/sqlify.git</developerConnection>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/r10r-org/sqlify/issues/</url>
+    </issueManagement>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
     <!-- pin encoding to utf-8 -->
     <properties>
