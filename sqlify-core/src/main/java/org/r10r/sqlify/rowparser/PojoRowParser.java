@@ -1,4 +1,4 @@
-package org.sqlify.rowparser;
+package org.r10r.sqlify.rowparser;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -7,7 +7,7 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.Time;
 import java.sql.Timestamp;
-import org.sqlify.SqlifyException;
+import org.r10r.sqlify.SqlifyException;
 
 /**
  * A very simple parser that converts one result row into one Pojo object.

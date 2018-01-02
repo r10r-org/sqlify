@@ -23,7 +23,7 @@
     <packaging>war</packaging>
 
     <parent>
-        <groupId>org.sqlify</groupId>
+        <groupId>org.r10r</groupId>
         <artifactId>sqlify</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
@@ -145,8 +145,9 @@
         </dependency>
         
         <dependency>
-            <groupId>org.sqlify</groupId>
+            <groupId>org.r10r</groupId>
             <artifactId>sqlify-core</artifactId>
+            <version>${project.parent.version}</version>
         </dependency>
         
     </dependencies>

@@ -1,8 +1,8 @@
-package org.sqlify;
+package org.r10r.sqlify;
 
 import java.math.BigDecimal;
 import java.net.URL;
-import org.sqlify.resultparser.ResultParser;
+import org.r10r.sqlify.resultparser.ResultParser;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;

@@ -1,5 +1,6 @@
-package org.sqlify.rowparser;
+package org.r10r.sqlify.rowparser;
 
+import org.r10r.sqlify.rowparser.PojoRowParser;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.ResultSet;

@@ -1,4 +1,4 @@
-package org.sqlify.rowparser;
+package org.r10r.sqlify.rowparser;
 
 public class RowParsers<T> {
 

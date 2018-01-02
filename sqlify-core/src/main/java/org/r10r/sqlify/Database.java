@@ -1,4 +1,4 @@
-package org.sqlify;
+package org.r10r.sqlify;
 
 import java.sql.Connection;
 import java.sql.SQLException;

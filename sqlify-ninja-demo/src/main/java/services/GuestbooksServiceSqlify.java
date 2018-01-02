@@ -4,10 +4,10 @@ import com.google.inject.Inject;
 import java.util.List;
 import models.Guestbook;
 import ninja.jdbc.NinjaDatasources;
-import org.sqlify.Database;
-import org.sqlify.Sqlify;
-import org.sqlify.resultparser.ListResultParser;
-import org.sqlify.resultparser.SingleResultParser;
+import org.r10r.sqlify.Database;
+import org.r10r.sqlify.Sqlify;
+import org.r10r.sqlify.resultparser.ListResultParser;
+import org.r10r.sqlify.resultparser.SingleResultParser;
 
 public class GuestbooksServiceSqlify {
 

@@ -1,4 +1,4 @@
-package org.sqlify;
+package org.r10r.sqlify;
 
 public class SqlifyException extends RuntimeException {
 

@@ -1,9 +1,9 @@
-package org.sqlify.resultparser;
+package org.r10r.sqlify.resultparser;
 
-import org.sqlify.rowparser.RowParsers;
+import org.r10r.sqlify.rowparser.RowParsers;
 import java.sql.ResultSet;
-import org.sqlify.SqlifyException;
-import org.sqlify.rowparser.RowParser;
+import org.r10r.sqlify.SqlifyException;
+import org.r10r.sqlify.rowparser.RowParser;
 
 public class SingleResultParser<T> implements ResultParser<T> {
 

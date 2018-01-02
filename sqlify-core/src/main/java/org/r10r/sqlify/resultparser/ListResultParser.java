@@ -1,10 +1,10 @@
-package org.sqlify.resultparser;
+package org.r10r.sqlify.resultparser;
 
-import org.sqlify.rowparser.RowParsers;
+import org.r10r.sqlify.rowparser.RowParsers;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-import org.sqlify.rowparser.RowParser;
+import org.r10r.sqlify.rowparser.RowParser;
 
 public class ListResultParser<T> implements ResultParser<List<T>> {
 
