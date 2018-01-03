@@ -27,8 +27,8 @@ import org.r10r.sqlify.SqlifyException;
  * 
  * | name | age |
  * --------------
- * | John | 23  |   ==> MyPojo with name John and age 23
- * | Dave | 22  |   ==> MyPojo with name Dave and age 22
+ * | John | 23  |   == MyPojo with name John and age 23
+ * | Dave | 22  |   == MyPojo with name Dave and age 22
  * 
  * Note:
  * - The parser does NOT take into account any inheritance of fields.
