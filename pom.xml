@@ -22,7 +22,7 @@
     <groupId>org.r10r</groupId>
     <artifactId>sqlify</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0-beta4-SNAPSHOT</version>
+    <version>1.0.0-beta10-SNAPSHOT</version>
     <url>http://github.com/raphaelbauer/sqlify</url>
 
     <modules>
