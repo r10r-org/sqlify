@@ -22,7 +22,7 @@
     <groupId>org.r10r</groupId>
     <artifactId>sqlify</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0-beta3-SNAPSHOT</version>
+    <version>1.0.0-beta4-SNAPSHOT</version>
     <url>http://github.com/raphaelbauer/sqlify</url>
 
     <modules>
@@ -36,6 +36,7 @@
         <url>https://github.com/r10r-org/sqlify</url>
         <connection>scm:git://github.com/r10r-org/sqlify.git</connection>
         <developerConnection>scm:git:git@github.com:r10r-org/sqlify.git</developerConnection>
+        <tag>HEAD</tag>
     </scm>
 
     <issueManagement>
@@ -73,9 +74,16 @@
         <org-netbeans-modules-editor-indent.CodeStyle.usedProfile>project</org-netbeans-modules-editor-indent.CodeStyle.usedProfile>
         <!-- End Netbeans configuration -->
     </properties>
+    
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <build>
-        
+
         <plugins>
             <plugin>       
                 <groupId>org.sonatype.plugins</groupId>
