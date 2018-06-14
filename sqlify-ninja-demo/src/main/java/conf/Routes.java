@@ -27,6 +27,7 @@ public class Routes implements ApplicationRoutes {
     public void init(Router router) {
 
         router.GET().route("/").with(ApplicationController.class, "index");
+        router.GET().route("/{id}").with(ApplicationController.class, "indexWithId");
 
         router.POST().route("/post").with(ApplicationController.class, "post");
 

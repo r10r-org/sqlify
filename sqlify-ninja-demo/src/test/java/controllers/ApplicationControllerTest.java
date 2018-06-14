@@ -29,5 +29,12 @@ public class ApplicationControllerTest extends NinjaTest {
     Assert.assertThat(result, CoreMatchers.containsString("a funky content"));
     Assert.assertThat(result, CoreMatchers.containsString("a@funkyemail.com"));
   }
+  
+  @Test
+  public void testThatSelectWorks() {
+    String result = ninjaTestBrowser.makeRequest(getServerAddress() + "/1");
+    // If select with id is broken then the following'd not show up:
+    Assert.assertThat(result, CoreMatchers.containsString("Hi. This is a simple guestbook."));
+  }
 
 }

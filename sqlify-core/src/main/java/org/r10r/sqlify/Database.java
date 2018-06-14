@@ -1,14 +1,11 @@
 package org.r10r.sqlify;
 
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.sql.DataSource;
 
 public class Database {
   
-  private DataSource dataSource;
+  private final DataSource dataSource;
 
   public static interface Executable<T> {
     T execute(Connection connection);

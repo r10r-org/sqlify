@@ -16,6 +16,7 @@
 
 package controllers;
 
+import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +31,8 @@ import org.slf4j.Logger;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.Collections;
+import java.util.Optional;
 import services.GuestbooksServiceSqlify;
 
 @Singleton
@@ -64,6 +67,27 @@ public class ApplicationController {
         return Results.html().render(toRender);
 
     }
+    
+    
+    public Result indexWithId(@Param("id") Integer id) {
+
+        // Get all guestbookentries now:
+        Optional<Guestbook> guestBookEntries = dbService.findById(id);
+        
+        List<Guestbook> guestbooks = guestBookEntries
+            .map(g -> Lists.newArrayList(g))
+            .orElse(Lists.newArrayList());
+        
+        
+        Map<String, Object> toRender = Maps.newHashMap();
+        toRender.put("guestBookEntries", guestbooks);
+
+        // Default rendering is simple by convention
+        // This renders the page in views/ApplicationController/index.ftl.html
+        return Results.html().template("views/ApplicationController/index.ftl.html").render(toRender);
+    }
+    
+    
 
     public Result post(@Param("email") String email,
                        @Param("content") String content) {

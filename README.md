@@ -61,7 +61,10 @@ a transaction (database.withTransaction(...()).
 
 ## Unchecked exceptions
 
-Sqlify does not use any checked exceptions. That makes default operation and usage of Sqlify straight forward. If you want to recover from certain error conditions you can catch Sqlify's SqlifyException. SqlifyException always contains the  exception that caused it.
+Sqlify does not use any checked exceptions. 
+That makes default operation and usage of Sqlify straight forward. 
+If you want to recover from certain error conditions you can catch Sqlify's SqlifyException. 
+SqlifyException always contains the exception that caused it.
 
 ## Database - an utility to get connections and transactions
 
@@ -198,4 +201,42 @@ return database.withConnection(connection -> {
 
 ```
 
-Both ResultPaser and RowParser are only interfaces and you can specify any mapping you want in method '.parseResultWith(mySpecialCustomResultParser))'.
+Both ResultPaser and RowParser are only interfaces and you can specify any mapping you 
+want in method '.parseResultWith(mySpecialCustomResultParser))'.
+
+
+## Batched execution when it comes to performance
+
+JDBC supports a so called batched mode. Instead of sending eg the same INSERT
+statement 1000 times you can just send the statement once and provide the 
+parameters as batch.
+
+This dramatically improves the performance for a large set of INSERT / UPDATE
+statements.
+
+Example:
+
+```
+// Let's say we got some persons we want to create in the database...
+List<Person> personsToCreate = myService.getPersonsToCreate();
+
+// We then create a list where we can add our batches for efficient
+// creation of these person
+List<Batch> batches = new ArrayList<>();
+
+// For each person we create a batch with parameters...
+for (Person person: personsToCreate) {
+  Batch batch = Batch.create()
+    .withParameter("name", person.name).
+    .withParameter("age", person.age);
+
+  batches.add(batch);
+}
+
+// And then you can use Sqlify to create and execute the statement in batched mode...
+database.withConnection(connection -> {
+  Sqlify.sqlBatch("INSERT INTO persons(name, age) VALUES ({name}, {age})")
+    .withBatches(batches)
+    .executeUpdate(connection)
+});
+```
