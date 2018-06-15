@@ -214,14 +214,17 @@ parameters as batch.
 This dramatically improves the performance for a large set of INSERT / UPDATE
 statements.
 
-Example:
+### Example
+
+Let's say we got some persons we want to create in the database...
 
 ```
-// Let's say we got some persons we want to create in the database...
 List<Person> personsToCreate = myService.getPersonsToCreate();
+```
 
-// We then create a list where we can add our batches for efficient
-// creation of these person
+We then create a list where we can add our batches for efficient
+creation of these persons
+```
 List<Batch> batches = new ArrayList<>();
 
 // For each person we create a batch with parameters...
@@ -232,11 +235,38 @@ for (Person person: personsToCreate) {
 
   batches.add(batch);
 }
+```
 
-// And then you can use Sqlify to create and execute the statement in batched mode...
+You can then use Sqlify to create and execute the statement in batched mode...
+
+```
 database.withConnection(connection -> {
   Sqlify.sqlBatch("INSERT INTO persons(name, age) VALUES ({name}, {age})")
     .withBatches(batches)
     .executeUpdate(connection)
 });
 ```
+
+# Releasing (committers only)
+
+Make sure you got gpg installed on your machine. Gpg is as good as gpg2, so
+there's not much difference. But the gpg plugin in maven works better with gpg,
+so we go with that one
+
+    brew install gpg
+
+Make sure to create a key
+
+    gpg --gen-key
+
+Then list the keys and send the public key to a keyserver so that people can
+verify that it's you:
+
+    gpg --keyserver hkp://pool.sks-keyservers.net --send-keys YOUR_PUBLIC_KEY
+
+
+Then you can create  a new release like so:
+
+    mvn release:clean 
+    mvn release:prepare 
+    mvn release:release -Dgpg.passphrase=yourpassphrase
