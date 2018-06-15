@@ -24,6 +24,19 @@
     <packaging>pom</packaging>
     <version>1.0.1-SNAPSHOT</version>
     <url>http://github.com/raphaelbauer/sqlify</url>
+    <name>${project.artifactId}</name>
+    <description>Sqlify - Java's finest SQL library</description>
+        
+    <developers>
+        <developer>
+            <name>Raphael A. Bauer</name>
+            <email>r@raphaelbauer.com</email>
+            <url>http://www.raphaelbauer.com</url>
+            <roles>
+                <role>Lead Architect</role>
+            </roles>
+        </developer>
+    </developers>
 
     <modules>
         <!-- the module is the core thing -->
