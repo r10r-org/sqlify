@@ -13,7 +13,7 @@ Goals:
 
 Non-Goals:
 - Sqlify does NOT provide an abstraction of the database. Check out Hibernate if you need something like that.
-- Sqlify does NOT Provide support for type-safe SQL queries. Look for Jooq and friends in that case.
+- Sqlify does NOT Provide support for type-safe SQL queries. Look for [Jooq](https://www.jooq.org/) and friends in that case.
 
 # Quick start
 
@@ -264,12 +264,27 @@ verify that it's you:
 
     gpg --keyserver hkp://pool.sks-keyservers.net --send-keys YOUR_PUBLIC_KEY
 
-
 Make sure to set 
 
     export GPG_TTY=$(tty)
 
 ... that way any input of gpg will be properly shown (entering your passphrase for instance)...
+
+Make sure you set the sonatype credentials in your ~/.m2/settings.xml:
+
+```
+<settings>
+
+  <servers>
+    <server>
+      <id>ossrh</id>
+      <username>USERNAME</username>
+      <password>PASSWORD</password>
+    </server>
+  </servers>
+
+</settings>
+```
 
 
 Then you can create  a new release like so:
