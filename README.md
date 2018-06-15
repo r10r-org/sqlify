@@ -265,8 +265,15 @@ verify that it's you:
     gpg --keyserver hkp://pool.sks-keyservers.net --send-keys YOUR_PUBLIC_KEY
 
 
+Make sure to set 
+
+    export GPG_TTY=$(tty)
+
+... that way any input of gpg will be properly shown (entering your passphrase for instance)...
+
+
 Then you can create  a new release like so:
 
     mvn release:clean 
     mvn release:prepare 
-    mvn release:release -Dgpg.passphrase=yourpassphrase
+    mvn release:release 
