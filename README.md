@@ -129,11 +129,11 @@ Named parameters in Sql queries are enclosed in curly braces ('{email}'). The
 parameters themselves can be set via .withParameter("content", guestbook.content)
 for instance.
 
-## Resultparsers
+## Result parsers
 
 Sql queries often create some kind of output. Sqlify can map the output to what the user expects.
 
-There are basically three different resultparsers the user can choose from:
+There are basically three different result parsers the user can choose from:
 
 * ListResultParser
 * SingleResultParser
@@ -216,19 +216,19 @@ statements.
 
 ### Example
 
-Let's say we got some persons we want to create in the database...
+Let's say we got some people we want to create in the database...
 
 ```
-List<Person> personsToCreate = myService.getPersonsToCreate();
+List<Person> peopleToCreate = myService.getPeopleToCreate();
 ```
 
 We then create a list where we can add our batches for efficient
-creation of these persons
+creation of these people
 ```
 List<Batch> batches = new ArrayList<>();
 
 // For each person we create a batch with parameters...
-for (Person person: personsToCreate) {
+for (Person person: peopleToCreate) {
   Batch batch = Batch.create()
     .withParameter("name", person.name).
     .withParameter("age", person.age);
@@ -241,7 +241,7 @@ You can then use Sqlify to create and execute the statement in batched mode...
 
 ```
 database.withConnection(connection -> {
-  Sqlify.sqlBatch("INSERT INTO persons(name, age) VALUES ({name}, {age})")
+  Sqlify.sqlBatch("INSERT INTO person(name, age) VALUES ({name}, {age})")
     .withBatches(batches)
     .executeUpdate(connection)
 });
