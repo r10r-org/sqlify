@@ -289,6 +289,6 @@ Make sure you set the sonatype credentials in your ~/.m2/settings.xml:
 
 Then you can create  a new release like so:
 
-    mvn release:clean 
-    mvn release:prepare 
-    mvn release:release 
+    mvn release:clean -Prelease
+    mvn release:prepare -Prelease
+    mvn release:release -Prelease
