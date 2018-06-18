@@ -54,20 +54,9 @@ public class PojoRowParser<E> implements RowParser<E> {
       Class<?> type = field.getType();
       boolean initialFieldAccessibility = field.isAccessible();
       field.setAccessible(true);
-      if (type == BigDecimal.class) {
-        BigDecimal value = resultSet.getBigDecimal(name);
-        field.set(e, value);
-      } else if (type == Boolean.class || type == boolean.class) {
-        Boolean value = resultSet.getBoolean(name);
-        field.set(e, value);
-      } else if (type == Date.class) {
-        Date value = resultSet.getDate(name);
-        field.set(e, value);
-      } else if (type == Double.class || type == double.class) {
-        Double value = resultSet.getDouble(name);
-        field.set(e, value);
-      } else if (type == Float.class || type == float.class) {
-        Float value = resultSet.getFloat(name);
+      
+      if (type == String.class) {
+        String value = resultSet.getString(name);
         field.set(e, value);
       } else if (type == Integer.class || type == int.class) {
         Integer value = resultSet.getInt(name);
@@ -75,11 +64,29 @@ public class PojoRowParser<E> implements RowParser<E> {
       } else if (type == Long.class || type == long.class) {
         Long value = resultSet.getLong(name);
         field.set(e, value);
+      } else if (type == Double.class || type == double.class) {
+        Double value = resultSet.getDouble(name);
+        field.set(e, value);
+      } else if (type == Float.class || type == float.class) {
+        Float value = resultSet.getFloat(name);
+        field.set(e, value);
       } else if (type == Short.class || type == short.class) {
         Short value = resultSet.getShort(name);
         field.set(e, value);
-      } else if (type == String.class) {
-        String value = resultSet.getString(name);
+      } else if (type == byte.class) {
+        byte value = resultSet.getByte(name);
+        field.set(e, value);
+      } else if (type == byte[].class) {
+        byte[] value = resultSet.getBytes(name);
+        field.set(e, value);
+      } else if (type == BigDecimal.class) {
+        BigDecimal value = resultSet.getBigDecimal(name);
+        field.set(e, value);
+      } else if (type == Boolean.class || type == boolean.class) {
+        Boolean value = resultSet.getBoolean(name);
+        field.set(e, value);
+      } else if (type == Date.class) {
+        Date value = resultSet.getDate(name);
         field.set(e, value);
       } else if (type == Time.class) {
         Time value = resultSet.getTime(name);

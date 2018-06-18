@@ -13,6 +13,8 @@ import org.mockito.Mockito;
 public class PojoRowParserTest {
 
   static class MyPojo {
+    byte byteThing;
+    byte[] byteArray;
     BigDecimal BigDecimal;
     Boolean Boolean;
     boolean boolean_;
@@ -37,6 +39,8 @@ public class PojoRowParserTest {
   public void testMapping() throws Exception {
     // given
     ResultSet resultSet = Mockito.mock(ResultSet.class);
+    Mockito.when(resultSet.getByte("byteThing")).thenReturn((byte) 0x4f);
+    Mockito.when(resultSet.getBytes("byteArray")).thenReturn(new byte[] { 0x4f, 0x4f });
     Mockito.when(resultSet.getBigDecimal("BigDecimal")).thenReturn(new BigDecimal(1234.12));
     Mockito.when(resultSet.getBoolean("Boolean")).thenReturn(true);
     Mockito.when(resultSet.getBoolean("boolean_")).thenReturn(true);
@@ -62,6 +66,8 @@ public class PojoRowParserTest {
     MyPojo myPojo = pojoRowParser.parse(resultSet);
     
     // then
+    assertThat(myPojo.byteThing, CoreMatchers.equalTo((byte) 0x4f));
+    assertThat(myPojo.byteArray, CoreMatchers.equalTo(new byte[] { 0x4f, 0x4f }));
     assertThat(myPojo.BigDecimal, CoreMatchers.equalTo(new BigDecimal(1234.12)));
     assertThat(myPojo.Boolean, CoreMatchers.equalTo(true));
     assertThat(myPojo.boolean_, CoreMatchers.equalTo(true));
