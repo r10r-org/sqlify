@@ -22,7 +22,7 @@
     <groupId>org.r10r</groupId>
     <artifactId>sqlify-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.4-SNAPSHOT</version>
+    <version>1.0.3-SNAPSHOT</version>
     <url>http://github.com/raphaelbauer/sqlify</url>
     <name>${project.artifactId}</name>
     <description>Sqlify - Java's finest SQL library</description>
