@@ -19,11 +19,11 @@ Non-Goals:
 
 First import the depdendency:
 
-    &lt;dependency&gt;
-        &lt;groupId&gt;org.r10r&lt;/groupId&gt;
-        &lt;artifactId&gt;sqlify&lt;/artifactId&gt;
-        &lt;version&gt;1.X.X&lt;/version&gt;
-    &lt;/dependency&gt;
+    <dependency>
+        <groupId>org.r10r</groupId>
+        <artifactId>sqlify</artifactId>
+        <version>1.X.X</version>
+    </dependency>
 
 
 ## SELECT query
