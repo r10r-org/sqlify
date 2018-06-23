@@ -75,7 +75,7 @@ That makes default operation and usage of Sqlify straight forward.
 If you want to recover from certain error conditions you can catch Sqlify's SqlifyException. 
 SqlifyException always contains the exception that caused it.
 
-## Database - an utility to get connections and transactions
+## Database - a utility to get connections and transactions
 
 In order to execute SQL queries you generally need a connection or a transaction.
 Sqlify provides a utility called "Database" that can provide connections to Sqlify.
