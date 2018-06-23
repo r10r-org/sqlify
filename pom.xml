@@ -20,7 +20,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.r10r</groupId>
-    <artifactId>sqlify</artifactId>
+    <artifactId>sqlify-parent</artifactId>
     <packaging>pom</packaging>
     <version>1.0.3-SNAPSHOT</version>
     <url>http://github.com/raphaelbauer/sqlify</url>
@@ -41,7 +41,7 @@
     <modules>
         <!-- the module is the core thing -->
         <!-- The demo is a ninja app acting as integration test and demo -->
-        <module>sqlify-core</module>
+        <module>sqlify</module>
         <module>sqlify-ninja-demo</module>
     </modules>
     

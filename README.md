@@ -17,6 +17,15 @@ Non-Goals:
 
 # Quick start
 
+First import the depdendency:
+
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.r10r&lt;/groupId&gt;
+        &lt;artifactId&gt;sqlify&lt;/artifactId&gt;
+        &lt;version&gt;1.X.X&lt;/version&gt;
+    &lt;/dependency&gt;
+
+
 ## SELECT query
 
 A simple query looks like:
