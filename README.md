@@ -300,4 +300,4 @@ Then you can create  a new release like so:
 
     mvn release:clean -Prelease
     mvn release:prepare -Prelease
-    mvn release:release -Prelease
+    mvn release:perform -Prelease
