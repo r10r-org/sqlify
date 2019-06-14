@@ -35,7 +35,7 @@ public class SingleResultParser<T> implements ResultParser<T> {
     if (resultSet.next()) {
       return rowParser.parse(resultSet);
     } else {
-      throw new SqlifyException("Ops. Could not parse single result, or there was not result.");
+      throw new SqlifyException("Ops. Could not parse single result, or there was no result.");
     }
   }
 

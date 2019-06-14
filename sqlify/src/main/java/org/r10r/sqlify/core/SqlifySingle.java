@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
+import org.r10r.sqlify.SqlifyException;
 
 public final class SqlifySingle {
 

@@ -1,5 +1,7 @@
 package org.r10r.sqlify;
 
+import org.r10r.sqlify.core.*;
+
 public class SqlifyException extends RuntimeException {
 
   public SqlifyException(String message, Throwable throwable) {
