@@ -1,5 +1,7 @@
 package org.r10r.sqlify.rowparser;
 
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.net.URL;
@@ -7,6 +9,7 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 import org.r10r.sqlify.SqlifyException;
 
 /**
@@ -48,11 +51,12 @@ public class PojoRowParser<E> implements RowParser<E> {
 
   @Override
   public E parse(ResultSet resultSet) throws Exception {
-    E e = clazz.newInstance();
+    E e = clazz.getDeclaredConstructor().newInstance();
     for (Field field : e.getClass().getDeclaredFields()) {
       String name = field.getName();
       Class<?> type = field.getType();
-      boolean initialFieldAccessibility = field.isAccessible();
+      boolean initialFieldAccessibility = field.canAccess(e);
+          
       field.setAccessible(true);
       
       if (type == String.class) {
@@ -93,6 +97,9 @@ public class PojoRowParser<E> implements RowParser<E> {
         field.set(e, value);
       } else if (type == Timestamp.class) {
         Timestamp value = resultSet.getTimestamp(name);
+        field.set(e, value);
+      } else if (type == OffsetDateTime.class) {
+        OffsetDateTime value = resultSet.getObject(name, OffsetDateTime.class);
         field.set(e, value);
       } else if (type == URL.class) {
         URL value = resultSet.getURL(name);

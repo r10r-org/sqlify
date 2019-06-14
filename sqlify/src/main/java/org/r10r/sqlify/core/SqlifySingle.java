@@ -52,6 +52,11 @@ public final class SqlifySingle {
   }
   
   public <T> T executeUpdateAndReturnGeneratedKey(Connection connection) {
+    
+    if (resultParser == null) {
+      throw new SqlifyException("Arg. I don't know how to parse the generated key. Please specify result parser. Example: '.parseResultWith(SingleResultParser.of(Long.class))'");
+    }
+    
     try (PreparedStatement preparedStatement = connection.prepareStatement(
           sqlForJdbc, 
           Statement.RETURN_GENERATED_KEYS)) {
