@@ -51,11 +51,11 @@ public class PojoRowParser<E> implements RowParser<E> {
 
   @Override
   public E parse(ResultSet resultSet) throws Exception {
-    E e = clazz.getDeclaredConstructor().newInstance();
+    E e = clazz.newInstance(); // Java 11 version: clazz.getDeclaredConstructor().newInstance();
     for (Field field : e.getClass().getDeclaredFields()) {
       String name = field.getName();
       Class<?> type = field.getType();
-      boolean initialFieldAccessibility = field.canAccess(e);
+      boolean initialFieldAccessibility = field.isAccessible(); // Java 11 version: field.canAccess(e);
           
       field.setAccessible(true);
       
