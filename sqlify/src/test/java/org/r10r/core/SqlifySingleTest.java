@@ -83,5 +83,29 @@ public class SqlifySingleTest {
     });
 
   }
+  
+  @Test
+  public void executeSelectWorksWithSimpleSyntax() {
+
+    // given
+    database.withConnection(connection -> 
+      Sqlify.sql("CREATE TABLE test_table (id BIGSERIAL PRIMARY KEY, text TEXT)").executeUpdate(connection)
+    );
+    
+    // when
+    database.withConnection(connection -> 
+      Sqlify
+        .sql("INSERT INTO test_table (text) VALUES ({a_text})")
+        .withParameter("a_text", "a text")
+        .parseResultWith(SingleResultParser.of(Long.class))
+        .executeUpdate(connection)
+    );
+    
+    // => works. With missing Generics in class Sqlify this would be a compile time error
+    database.withConnection(connection -> 
+      Sqlify.sql("DROP TABLE test_table").executeUpdate(connection)
+    );
+
+  }
 
 }

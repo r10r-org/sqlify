@@ -4,15 +4,21 @@ import java.sql.Connection;
 import javax.sql.DataSource;
 
 public class Database {
-  
-  private final DataSource dataSource;
 
-  public static interface Executable<T> {
-    T execute(Connection connection);
-  }
+  private final DataSource dataSource;
 
   private Database(DataSource dataSource) {
     this.dataSource = dataSource;
+  }
+
+  public static Database use(DataSource dataSource) {
+    Database database = new Database(dataSource);
+    return database;
+  }
+
+  public static interface Executable<T> {
+
+    T execute(Connection connection);
   }
 
   public <T> T withConnection(Executable<T> block) {
@@ -20,7 +26,7 @@ public class Database {
   }
 
   public <T> T withConnection(boolean autocommit, Executable<T> block) {
-    try (Connection connection = this.dataSource.getConnection()) {
+    try (Connection connection = dataSource.getConnection()) {
       connection.setAutoCommit(autocommit);
       return block.execute(connection);
     } catch (Exception e) {
@@ -47,13 +53,5 @@ public class Database {
 
     });
   }
-  
-  //////////////////////////////////////////////////////////////////////////////
-  // Simplified constructor
-  //////////////////////////////////////////////////////////////////////////////
-  public static Database use(DataSource dataSource) {
-    Database database = new Database(dataSource);
-    return database;
-  }
-  
+
 }

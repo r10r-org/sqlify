@@ -21,7 +21,7 @@ public final class Sqlify {
    * FROM my_table WHERE id = {id}
    * @return a nice Builder for chaining
    */
-  public static Builder sql(String sql) {
+  public static <E> Builder sql(String sql) {
     return new Builder(sql);
   }
 
