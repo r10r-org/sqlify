@@ -25,6 +25,8 @@ public final class SqlifySingle {
     this.parameterMap = parameterMap;
     this.parametersInSqlSorted = SqlifyCore.extractParameterNames(userProvidedSqlWithPlaceholder);
     this.sqlForJdbc = SqlifyCore.convertNamedParametersIntoJdbcCompliantPreparedStatement(userProvidedSqlWithPlaceholder);
+ 
+     SqlifyCore.verifyThatAllNeededParametersAreProvidedByUser(parameterMap, parametersInSqlSorted);
   }
 
   public <T> T executeSelect(Connection connection) {

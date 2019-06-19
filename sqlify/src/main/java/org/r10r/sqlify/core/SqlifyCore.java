@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.r10r.sqlify.SqlifyException;
 
 public final class SqlifyCore {
@@ -77,6 +78,25 @@ public final class SqlifyCore {
       throw new SqlifyException("Ops. An error occurred. " + sqlException.getMessage(), sqlException);
     }
     return preparedStatement;
+  }
+  
+  
+  public static void verifyThatAllNeededParametersAreProvidedByUser(
+      Map<String, Object> parameterMap, 
+      List<String> parametersInSqlSorted) {
+    
+    List<String> missingParametersToExecuteSqlStatement = parametersInSqlSorted
+        .stream()
+        .filter(parameterInSql -> !parameterMap.containsKey(parameterInSql))
+        .collect(Collectors.toList());
+    
+    if (!missingParametersToExecuteSqlStatement.isEmpty()) {
+      String missingParametersToExecuteSqlStatementAsString = missingParametersToExecuteSqlStatement
+          .stream()
+          .collect( Collectors.joining( ", " ) );
+      throw new SqlifyException("Missing parameters to execute sql query. Please provide the following paramters via withParameters(key, value): " + missingParametersToExecuteSqlStatementAsString);
+    }
+  
   }
 
 }

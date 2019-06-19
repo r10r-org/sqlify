@@ -107,5 +107,22 @@ public class SqlifySingleTest {
     );
 
   }
+  
+  @Test
+  public void noticesWhenParametersAreMissing() {
+
+    // given
+    try {
+      database.withConnection(connection -> 
+        Sqlify
+            .sql("SELECT * FROM table WHERE id = {id} AND name = {name}")
+            .executeUpdate(connection)
+      );
+      fail("expecting an exception here...");
+    } catch (SqlifyException sqlifyException) {
+      assertThat(sqlifyException.getMessage()).isEqualTo("org.r10r.sqlify.SqlifyException: Missing parameters to execute sql query. Please provide the following paramters via withParameters(key, value): id, name");
+    }
+
+  }
 
 }

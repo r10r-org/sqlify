@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.r10r.sqlify.core.Batch;
 import org.r10r.sqlify.core.SqlifyBatched;
 import org.r10r.sqlify.core.SqlifySingle;
@@ -36,7 +37,36 @@ public final class Sqlify {
       this.parameterMap = new HashMap<>();
     }
 
+    /**
+     * Provide parameters for placeholders in query.
+     * 
+     * For instance "SELECT * FROM table WHERE id = {id}
+     * 
+     * => withParameter("id", 1234L);
+     * 
+     * @param key The key in your SQL query. Written in curly braces inside your SQL.
+     * @param value The value for that query. If it is an Optional it will be unpacked automatically if it contains a value.
+     * @return The builder for chaining
+     */
     public Builder withParameter(String key, Object value) {
+      if (key == null) {
+        throw new SqlifyException("Calling withParameter(key, value) with a key that is null. That's not supported.");
+      }
+      
+      if (key == value) {
+        throw new SqlifyException("Calling withParameter(key, value) with a value that is is null. That's not supported. Consider using an Optional instead.");
+      }
+      
+      // convenience => If the value for a parameter an empty Optional
+      // we don't do anything we it, otherwise we unpack it
+      // This makes the client code look nicer.
+      
+      if (value instanceof Optional) {
+        Optional optional = (Optional) value;
+        optional.ifPresent(optionalValue -> parameterMap.put(key, optionalValue));
+        return this;
+      }
+      
       parameterMap.put(key, value);
       return this;
     }
