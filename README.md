@@ -1,4 +1,8 @@
-# Sqlify - Java's finest SQL library [![Build Status](https://api.travis-ci.org/r10r-org/sqlify.svg)](https://travis-ci.org/r10r-org/sqlify)
+# Sqlify - Java's most experimental (TM) SQL library [![Build Status](https://api.travis-ci.org/r10r-org/sqlify.svg)](https://travis-ci.org/r10r-org/sqlify)
+
+**NOTE: When we started writing this library no fluent and declarative approach of writing SQL queries
+did exist. But that has changed with the advent of the excellent Jdbi 3 (http://jdbi.org). In short: You likely want
+to use Jdbi 3 if you are looking for a declarative, fluent and no-thrills SQL approach in Java.**
 
 # Intro
 
